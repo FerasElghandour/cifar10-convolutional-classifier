@@ -12,7 +12,7 @@ A three-stage RGB convolutional classifier with separate raw-logit training and 
 
 ## Train and evaluate the image model
 
-The recovered compatible checkpoint reproduces **87.80% accuracy on all 10,000 CIFAR-10 test images** (cross-entropy0.37405). A strict parameter-name conversion preserves identical logits. The new reference trainer has fixed prepared splits, best-validation selection, resume/reload checks and held-out predictions.
+The recovered compatible checkpoint reproduces **87.80% accuracy on all 10,000 CIFAR-10 test images** (cross-entropy 0.37405). A strict parameter-name conversion preserves identical logits. The new reference trainer has fixed prepared splits, best-validation selection, resume/reload checks and held-out predictions.
 
 [Commands, artifacts and benchmark scope](BENCHMARKS.md) · [Versioned profiles](reproduction.json)
 
@@ -49,7 +49,7 @@ Observed output from this run:
 
 The saved 25-epoch experiment reports 87.80% accuracy on all 10,000 CIFAR-10 test images, with cross-entropy 0.3741. Per-class recall ranges from 72.0% for cats to 94.7% for ships.
 
-These historical figures describe the completed study. This refactored standalone implementation has separate validation and has not been used to recertify the historical benchmark. The public release contains the portable core and focused tests.
+The recovered checkpoint has now been independently re-evaluated on the full test set, reproducing the reported accuracy. That verifies checkpoint inference, not a fresh 25-epoch training run. The new trainer and generated-data tests have separate scopes.
 
 ## Run locally
 
@@ -66,4 +66,8 @@ Prepare your own inputs as described in [DATA.md](DATA.md). Tests use generated 
 
 ## Practical relevance and limitations
 
-These are saved results from one seed and one training budget. The full run expects CUDA. The release includes a CPU architecture check, not a new 25-epoch training claim.
+These are saved results from one seed and one training budget. The trainer supports explicit CPU, CUDA or Apple MPS selection. The archived training hardware and current device checks have separate scope; this release does not claim a fresh 25-epoch reproduction.
+
+## Reuse
+
+Original reproduction and validation tooling is available under MIT; see [LICENSING.md](LICENSING.md) for the explicit file scope and preserved upstream, dataset and checkpoint terms.

@@ -12,8 +12,8 @@ Use a new output directory for each run. The driver writes command logs, source/
 
 | Profile | Actual scope | Required inputs |
 |---|---|---|
-| `checks` | Offline behavioral regressions; not a fresh dataset benchmark | None |
-| `train` | New reference training protocol on supplied fixed splits; validation-selected checkpoint and held-out metrics | data, config |
+| `checks` | Offline source and generated-data training, checkpoint selection and inference reload checks; not a real-data benchmark | None |
+| `train` | Configurable training on supplied fixed splits; default budget differs from named published reference protocols | data, config |
 
 Supply named paths with `--input name=/absolute/path`. Exact commands are versioned in [reproduction.json](reproduction.json); direct training commands and preparation contracts are below.
 
@@ -36,9 +36,18 @@ python predict.py --checkpoint checkpoints/cifar10.pt image.png
 
 For an explicit small integration run add `--limit-train 1000 --limit-test 1000` during preparation and use two epochs. That is a different benchmark. The recovered model was evaluated on all 10,000 official test images. Resume an interrupted run with `--resume --checkpoint runs/cifar/best.pt`, the same prepared data, and a **new** output directory; `--epochs` is the total target epoch count.
 
+
+## Device selection
+
+`train.py --device cpu` is the default reference path. `--device mps` explicitly selects an Apple Silicon GPU; `--device cuda` requires a CUDA GPU. Unsupported or unavailable devices fail explicitly. No automatic CPU fallback is enabled. Metrics record the device, runtime and elapsed time. CPU and GPU runs are separate numerical protocols; equal seeds do not imply equal weights or results across devices. Resume requires the checkpoint's original device type and saves its accelerator RNG state.
+
+For a generated-data device integration check, set `TRAIN_TEST_DEVICE=mps` when running `python test_training_pipeline.py`. This checks training and checkpoint reload, not real-data model quality.
+
 ## Recorded command definitions
 
 ### checks
+
+Offline source and generated-data training, checkpoint selection and inference reload checks; not a real-data benchmark
 
 ```text
 {python} smoke_test.py
@@ -47,8 +56,10 @@ For an explicit small integration run add `--limit-train 1000 --limit-test 1000`
 
 ### train
 
+Configurable training on supplied fixed splits; default budget differs from named published reference protocols
+
 ```text
 {python} train.py --data {input:data} --config {input:config} --output {output}/training
 ```
 
-`{python}` is the current interpreter. `{output}` is the new run directory. `{input:name}` refers to a named absolute input path supplied to the driver. Install declared dependencies in a clean environment before executing. Never execute untrusted serialized models or notebooks.
+The observed local runtime is recorded in [reference-environment-macos.json](reference-environment-macos.json). The reproduction driver hashes source files and inputs for each run. Published result records retain their own original runtime and revision; changing the device or budget creates a different experiment.
