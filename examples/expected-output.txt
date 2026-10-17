@@ -1,0 +1,11 @@
+{
+  "logits_shape": [
+    2,
+    10
+  ],
+  "loss": 2.333203077316284,
+  "probability_row_sums": [
+    1.0,
+    1.0
+  ]
+}
