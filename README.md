@@ -8,6 +8,15 @@ A three-stage RGB convolutional classifier with separate raw-logit training and 
 
 ![Implementation mechanism: RGB batch → Two convolutions per stage at 32 then 64 then 128 channels → Pool to 2048 flattened features → 256-unit head with dropout → 10 logits for loss or softmax for inference](assets/mechanism.svg)
 
+
+
+## Train and evaluate the image model
+
+The recovered compatible checkpoint reproduces **87.80% accuracy on all 10,000 CIFAR-10 test images** (cross-entropy0.37405). A strict parameter-name conversion preserves identical logits. The new reference trainer has fixed prepared splits, best-validation selection, resume/reload checks and held-out predictions.
+
+[Commands, artifacts and benchmark scope](BENCHMARKS.md) · [Versioned profiles](reproduction.json)
+
+
 ## Try a small example
 
 Generated tensors exercise logits, probability normalization and backpropagation. The example does not reproduce the historical 25-epoch accuracy.

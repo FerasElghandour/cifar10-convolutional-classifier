@@ -1,1 +1,5 @@
+numpy
 torch
+Pillow
+pyarrow
+scikit-learn
